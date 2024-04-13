@@ -3,11 +3,11 @@ pragma solidity ^0.8.13;
 
 import {Test, console2, stdJson} from "forge-std/Test.sol";
 
-import {Merkle} from "../src/AbegToken.sol";
+import {Eje} from "../src/EjeToken.sol";
 
-contract AbegTest is Test {
+contract EjeTest is Test {
     using stdJson for string;
-    Merkle public merkle;
+    Eje public eje;
     struct Result {
         bytes32 leaf;
         bytes32[] proof;
@@ -25,7 +25,7 @@ contract AbegTest is Test {
     address user1 = 0xb0e52BBE49E57d9Bc5bAed1644958866fc5FDFBc;
 
     function setUp() public {
-        merkle = new Merkle(root);
+        eje = new Eje(root);
         string memory _root = vm.projectRoot();
         string memory path = string.concat(_root, "/merkle_tree.json");
 
@@ -54,7 +54,7 @@ contract AbegTest is Test {
     }
 
     function testClaimed() public {
-        bool success = merkle.claim(
+        bool success = eje.claim(
             user.user,
             user.amount,
             user.tokenId,
@@ -64,16 +64,16 @@ contract AbegTest is Test {
     }
 
     // function testAlreadyClaimed() public {
-    //     merkle.claim(user.user, user.amount, user.tokenId, result.proof);
+    //     eje.claim(user.user, user.amount, user.tokenId, result.proof);
     //     vm.expectRevert("already claimed");
-    //     merkle.claim(user.user, user.amount, user.tokenId, result.proof);
+    //     eje.claim(user.user, user.amount, user.tokenId, result.proof);
     // }
 
     function testIncorrectProof() public {
         bytes32[] memory fakeProofleaveitleaveit;
 
         vm.expectRevert("not whitelisted");
-        merkle.claim(
+        eje.claim(
             user.user,
             user.amount,
             user.tokenId,

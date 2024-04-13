@@ -6,7 +6,7 @@ import "solmate/tokens/ERC1155.sol";
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
-contract Merkle is ERC1155 {
+contract Eje is ERC1155 {
     bytes32 root;
 
     constructor(bytes32 _root) {
