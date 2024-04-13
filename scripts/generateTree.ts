@@ -13,8 +13,9 @@ export interface AddressProof {
 }
 
 export interface Data {
-  amount?: any;
   address: string;
+  amount?: any;
+  tokenId: number;
 }
 
 const csvfile = path.join(__dirname, "data.csv");
@@ -37,8 +38,8 @@ async function generateMerkleTree(csvFilePath: string): Promise<void> {
   // Hash the data using the Solidity keccak256 function
   for (const row of data) {
     leaf = utils.solidityKeccak256(
-      ["address", "uint256"],
-      [row.address, row.amount]
+      ["address", "uint256", "uint256"],
+      [row.address, row.tokenId, row.amount]
     );
     leaves.push(leaf);
   }

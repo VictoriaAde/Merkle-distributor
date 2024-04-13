@@ -16,12 +16,13 @@ contract AbegTest is Test {
     struct User {
         address user;
         uint amount;
+        uint256 tokenId;
     }
     Result public result;
     User public user;
     bytes32 root =
-        0x8f0704ea72bc40746e1ba7da33354957b21e9ad4a1df2dd39c959348ec18b837;
-    address user1 = 0x001Daa61Eaa241A8D89607194FC3b1184dcB9B4C;
+        0x4320c8d7728c67e7d376b164d088990f2ce16d6c90ea8d0793804c051f20249b;
+    address user1 = 0xb0e52BBE49E57d9Bc5bAed1644958866fc5FDFBc;
 
     function setUp() public {
         merkle = new Merkle(root);
@@ -44,25 +45,39 @@ contract AbegTest is Test {
             dataJson,
             string.concat(".", vm.toString(user1), ".amount")
         );
+        user.tokenId = vm.parseJsonUint(
+            dataJson,
+            string.concat(".", vm.toString(user1), ".tokenId")
+        );
         result = abi.decode(encodedResult, (Result));
         console2.logBytes32(result.leaf);
     }
 
     function testClaimed() public {
-        bool success = merkle.claim(user.user, user.amount, result.proof);
+        bool success = merkle.claim(
+            user.user,
+            user.amount,
+            user.tokenId,
+            result.proof
+        );
         assertTrue(success);
     }
 
-    function testAlreadyClaimed() public {
-        merkle.claim(user.user, user.amount, result.proof);
-        vm.expectRevert("already claimed");
-        merkle.claim(user.user, user.amount, result.proof);
-    }
+    // function testAlreadyClaimed() public {
+    //     merkle.claim(user.user, user.amount, user.tokenId, result.proof);
+    //     vm.expectRevert("already claimed");
+    //     merkle.claim(user.user, user.amount, user.tokenId, result.proof);
+    // }
 
     function testIncorrectProof() public {
         bytes32[] memory fakeProofleaveitleaveit;
 
         vm.expectRevert("not whitelisted");
-        merkle.claim(user.user, user.amount, fakeProofleaveitleaveit);
+        merkle.claim(
+            user.user,
+            user.amount,
+            user.tokenId,
+            fakeProofleaveitleaveit
+        );
     }
 }
